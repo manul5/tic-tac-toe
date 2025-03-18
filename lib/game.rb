@@ -1,4 +1,5 @@
-class Game 
+class Game
+
   @@board = Array.new(3) {Array.new(3, " ")}
 
   def self.print_board()
@@ -7,6 +8,22 @@ class Game
         print "[ " << @@board[i][j] << " ]"
       end
       puts ""
+    end
+  end
+
+  def self.is_empty?
+    count = 0
+    for i in 0..2
+      for j in 0..2
+        if @@board[i][j] == " "
+          count += 1
+        end
+      end
+    end
+    if count.positive?
+      true
+    else
+      false
     end
   end
 
@@ -65,8 +82,35 @@ class Game
     print_board
   end
 
+  def self.play_game()
+    players = ["X","O"]
+    number = Random.new.rand(2)
+    current_player = players[number]
+    puts "Bienvenido al juego del TATETI"
+    
+    while is_empty?
+      puts "---------------------------------------------"
+      puts "Es el turno del jugador #{current_player}"
+      play_round(current_player)
+      break if check_tateti?(current_player)
+      if number == 0
+        number = 1
+        current_player = players[number]
+      else
+        number = 0
+        current_player = players[number]
+      end
+    end
+
+    puts "---------------------------------------------"
+    if is_empty?
+      puts "GANÓ #{current_player}"
+    else
+      puts 'EMPATE'
+    end
+    # "GANÓ #{current_player}"
+  end
+
 end
 
-Game.play_round
-Game.play_round
-Game.play_round
+Game.play_game
