@@ -73,26 +73,43 @@ class Game
     check_diagonals?(player) || check_rows?(player) || check_columns?(player)
   end
 
-  def self.play_round(player="X")
+  def self.play_round(player)
+    played = false
     puts "Elegí la fila en la que querés poner tu ficha (del 0 al 2)"
     row = gets.chomp!.to_i
     puts "Elegí la columna en la que querés poner tu ficha (del 0 al 2)"
     column = gets.chomp!.to_i
-    @@board[row][column] = player
-    print_board
+    if !(0..2).include?(row) || !(0..2).include?(row)
+      puts "El número ingresado no es válido"
+    else
+      if @@board[row][column] == " "
+        @@board[row][column] = player
+        played = true
+      else
+        puts "El casillero ya está ocupado, elija otro"
+      end
+      print_board
+    end
+    played
+    
   end
 
   def self.play_game()
     players = ["X","O"]
     number = Random.new.rand(2)
     current_player = players[number]
+    player_won = ""
     puts "Bienvenido al juego del TATETI"
     
     while is_empty?
       puts "---------------------------------------------"
       puts "Es el turno del jugador #{current_player}"
-      play_round(current_player)
-      break if check_tateti?(current_player)
+      while !play_round(current_player)
+      end
+      if check_tateti?(current_player)
+        player_won = current_player
+        break
+      end
       if number == 0
         number = 1
         current_player = players[number]
@@ -103,14 +120,10 @@ class Game
     end
 
     puts "---------------------------------------------"
-    if is_empty?
-      puts "GANÓ #{current_player}"
+    if !player_won.empty?
+      puts "GANÓ #{player_won}"
     else
       puts 'EMPATE'
     end
-    # "GANÓ #{current_player}"
   end
-
 end
-
-Game.play_game
